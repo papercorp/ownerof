@@ -1,0 +1,115 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ownerof</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="ownerof" />
+<meta name="twitter:description" content="take a snapshot of all nft collection owners" />
+<meta name="twitter:image" content="https://ownerof.papercorp.org/ownerof.png" />
+<meta property="og:url" content="https://ownerof.papercorp.org/ownerof.png" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="ownerof" />
+<meta property="og:description" content="take a snapshot of all nft collection owners" />
+<meta property="og:image" content="https://ownerof.papercorp.org/ownerof.png" />
+<style>
+body {
+  font-family: Sans-serif;
+}
+nav {
+  display: flex;
+  align-items: center;
+}
+nav > * {
+  display: block;
+  color: black;
+  text-decoration: none;
+  margin: 10px;
+}
+nav a {
+  font-size: 30px;
+  font-weight: bold;
+}
+nav input[type=text] {
+  padding: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 0;
+}
+nav input[type=submit] {
+  background: black;
+  color: white;
+  border: none;
+  padding: 10px;
+}
+form {
+  margin: 0;
+}
+.container {
+  padding: 10px;
+}
+</style>
+</head>
+<body>
+<nav>
+<a href="/">ownerof</a>
+<form>
+<input id='address' type='text' placeholder='enter contract address'>
+<input id='start' type='text' placeholder='tokenId start'>
+<input id='end' type='text' placeholder='tokenId end'>
+<input type='submit' value='snapshot'>
+</form>
+</nav>
+<div class='container'>
+  <h3>
+  progress
+  </h3>
+  <div id='progress'></div>
+  <h3>
+  full
+  </h3>
+  <pre id='full'></pre>
+  <h3>
+  deduplicated
+  </h3>
+  <pre id='dedup'></pre>
+</div>
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@3.0.0/dist/web3.min.js"></script>
+<script>
+var web3 = new Web3(window.ethereum);
+document.querySelector("form").addEventListener("submit", async (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+  let collection = new web3.eth.Contract([{
+    "inputs": [{
+      "internalType": "uint256",
+      "name": "tokenId",
+      "type": "uint256"
+    }],
+    "name": "ownerOf",
+    "outputs": [{
+      "internalType": "address",
+      "name": "",
+      "type": "address"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+  }], document.querySelector("#address").value);
+  let snapshot = []
+  let start = parseInt(document.querySelector("#start").value)
+  let end = parseInt(document.querySelector("#end").value)
+  for(let i=start; i<=end; i++) {
+  	try {
+			let owner = await collection.methods.ownerOf(i).call()
+      snapshot.push(owner)
+      console.log(owner)
+      document.querySelector("#progress").innerHTML = i;
+    } catch (e) {
+    	console.log(e)
+    }
+  }
+  document.querySelector("#full").innerHTML = snapshot.join("\n")
+  document.querySelector("#dedup").innerHTML = Array.from(new Set(snapshot)).join("\n")
+})
+</script>
+</body>
+</html>
