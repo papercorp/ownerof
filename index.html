@@ -26,7 +26,7 @@ nav > * {
   text-decoration: none;
   margin: 10px;
 }
-nav a {
+nav a.logo {
   font-size: 30px;
   font-weight: bold;
 }
@@ -47,17 +47,22 @@ form {
 .container {
   padding: 10px;
 }
+.f {
+  flex-grow: 1;
+}
 </style>
 </head>
 <body>
 <nav>
-<a href="/">ownerof</a>
+<a class='logo' href="/">ownerof</a>
 <form>
 <input id='address' type='text' placeholder='enter contract address'>
 <input id='start' type='text' placeholder='tokenId start'>
 <input id='end' type='text' placeholder='tokenId end'>
 <input type='submit' value='snapshot'>
 </form>
+<div class='f'></div>
+<a href="https://github.com/papercorp/ownerof">GitHub</a>
 </nav>
 <div class='container'>
   <h3>
